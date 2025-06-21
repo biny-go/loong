@@ -7,6 +7,7 @@ require (
 	github.com/spf13/cobra v1.9.1
 	golang.org/x/mod v0.25.0
 	golang.org/x/text v0.26.0
+	google.golang.org/protobuf v1.36.6
 )
 
 require (
