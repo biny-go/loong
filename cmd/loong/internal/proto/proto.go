@@ -3,9 +3,9 @@ package proto
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/biny-go/cLoong/cmd/cloong/internal/proto/add"
-	"github.com/biny-go/cLoong/cmd/cloong/internal/proto/client"
-	"github.com/biny-go/cLoong/cmd/cloong/internal/proto/server"
+	"github.com/biny-go/loong/cmd/loong/internal/proto/add"
+	"github.com/biny-go/loong/cmd/loong/internal/proto/client"
+	"github.com/biny-go/loong/cmd/loong/internal/proto/server"
 )
 
 // CmdProto represents the proto command.

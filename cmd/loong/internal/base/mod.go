@@ -43,8 +43,8 @@ func ModuleVersion(path string) (string, error) {
 	}
 }
 
-// CloongMod returns cloong mod.
-func CloongMod() string {
+// LoongMod returns loong mod.
+func LoongMod() string {
 	// go 1.15+ read from env GOMODCACHE
 	cacheOut, _ := exec.Command("go", "env", "GOMODCACHE").Output()
 	cachePath := strings.Trim(string(cacheOut), "\n")
@@ -53,10 +53,10 @@ func CloongMod() string {
 	if cachePath == "" {
 		cachePath = filepath.Join(gopath, "pkg", "mod")
 	}
-	if path, err := ModuleVersion("github.com/biny-go/cLoong"); err == nil {
-		// $GOPATH/pkg/mod/github.com/biny-go/cLoong
+	if path, err := ModuleVersion("github.com/biny-go/loong"); err == nil {
+		// $GOPATH/pkg/mod/github.com/biny-go/loong
 		return filepath.Join(cachePath, path)
 	}
-	// $GOPATH/src/github.com/biny-go/cLoong
-	return filepath.Join(gopath, "src", "github.com", "biny-go", "cLoong")
+	// $GOPATH/src/github.com/biny-go/Loong
+	return filepath.Join(gopath, "src", "github.com", "biny-go", "loong")
 }

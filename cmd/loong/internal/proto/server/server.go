@@ -17,7 +17,7 @@ import (
 var CmdServer = &cobra.Command{
 	Use:   "server",
 	Short: "Generate the proto server implementations",
-	Long:  "Generate the proto server implementations. Example: cloong proto server api/xxx.proto --target-dir=internal/service",
+	Long:  "Generate the proto server implementations. Example: loong proto server api/xxx.proto --target-dir=internal/service",
 	Run:   run,
 }
 var targetDir string
@@ -28,7 +28,7 @@ func init() {
 
 func run(_ *cobra.Command, args []string) {
 	if len(args) == 0 {
-		fmt.Fprintln(os.Stderr, "Please specify the proto file. Example: cloong proto server api/xxx.proto")
+		fmt.Fprintln(os.Stderr, "Please specify the proto file. Example: loong proto server api/xxx.proto")
 		return
 	}
 	reader, err := os.Open(args[0])

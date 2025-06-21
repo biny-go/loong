@@ -1,4 +1,4 @@
-module github.com/biny-go/cLoong
+module github.com/biny-go/loong
 
 go 1.24.4
 

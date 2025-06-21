@@ -10,21 +10,21 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/biny-go/cLoong/cmd/cloong/internal/base"
+	"github.com/biny-go/loong/cmd/loong/internal/base"
 )
 
 // CmdClient represents the source command.
 var CmdClient = &cobra.Command{
 	Use:   "client",
 	Short: "Generate the proto client code",
-	Long:  "Generate the proto client code. Example: cloong proto client helloworld.proto",
+	Long:  "Generate the proto client code. Example: loong proto client helloworld.proto",
 	Run:   run,
 }
 
 var protoPath string
 
 func init() {
-	if protoPath = os.Getenv("CLOONG_PROTO_PATH"); protoPath == "" {
+	if protoPath = os.Getenv("LOONG_PROTO_PATH"); protoPath == "" {
 		protoPath = "./third_party"
 	}
 	CmdClient.Flags().StringVarP(&protoPath, "proto_path", "p", protoPath, "proto path")
@@ -40,8 +40,8 @@ func run(_ *cobra.Command, args []string) {
 		proto = strings.TrimSpace(args[0])
 	)
 	if err = look("protoc-gen-go", "protoc-gen-go-grpc", "protoc-gen-go-http", "protoc-gen-go-errors", "protoc-gen-openapi"); err != nil {
-		// update the cloong plugins
-		cmd := exec.Command("cloong", "upgrade")
+		// update the loong plugins
+		cmd := exec.Command("loong", "upgrade")
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		if err = cmd.Run(); err != nil {
@@ -89,11 +89,10 @@ func generate(proto string, args []string) error {
 		input = append(input, "--proto_path="+protoPath)
 	}
 	inputExt := []string{
-		"--proto_path=" + base.CloongMod(),
-		"--proto_path=" + filepath.Join(base.CloongMod(), "proto"),
-		"--proto_path=" + filepath.Join(base.CloongMod(), "proto", "common"),
-		// "--proto_path=" + filepath.Join(base.CloongMod(), "proto", "common"),
-		"--proto_path=" + filepath.Join(base.CloongMod(), "third_party"),
+		"--proto_path=" + base.LoongMod(),
+		"--proto_path=" + filepath.Join(base.LoongMod(), "proto"),
+		"--proto_path=" + filepath.Join(base.LoongMod(), "proto", "common"),
+		"--proto_path=" + filepath.Join(base.LoongMod(), "third_party"),
 		"--go_out=paths=source_relative:.",
 		"--go-grpc_out=paths=source_relative:.",
 		"--go-http_out=paths=source_relative:.",

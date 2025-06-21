@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package errors;
 
-option go_package = "github.com/biny-go/cLoong/errors;errors";
+option go_package = "github.com/biny-go/loong/errors;errors";
 option java_multiple_files = true;
-option java_package = "com.github.cloong.errors";
-option objc_class_prefix = "cLoongErrors";
+option java_package = "com.github.loong.errors";
+option objc_class_prefix = "loongErrors";
 
 import "google/protobuf/descriptor.proto";
 
