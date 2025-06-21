@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package common;
+
+// 格式说明:  "生成代码的Go导入路径;生成的Go包名"
+option go_package = "github.com/biny-go/cLoong/proto/common;common";
+option java_multiple_files = true;
+option java_package = "com.github.cloong.common";
+option objc_class_prefix = "cloongCommon";
+
+import "google/protobuf/any.proto";
+
+// 对象型的应答
+message BaseResult {
+	bool success = 1;
+	string error = 2;
+	string errCode = 3;
+	google.protobuf.Any data = 4;
+}
+
+message Status {
+  int32 code = 1;
+  string reason = 2;
+  string message = 3;
+  map<string, string> metadata = 4;
+};
