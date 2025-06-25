@@ -106,6 +106,9 @@ func getMethodType(streamsRequest, streamsReturns bool) MethodType {
 }
 
 func parametersName(name string) string {
+	if strings.HasPrefix(name, "common.") {
+		return name
+	}
 	return strings.ReplaceAll(name, ".", "_")
 }
 

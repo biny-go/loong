@@ -49,14 +49,17 @@ func LoongMod() string {
 	cacheOut, _ := exec.Command("go", "env", "GOMODCACHE").Output()
 	cachePath := strings.Trim(string(cacheOut), "\n")
 	pathOut, _ := exec.Command("go", "env", "GOPATH").Output()
+	// fmt.Println("pathOut:", string(pathOut))
 	gopath := strings.Trim(string(pathOut), "\n")
 	if cachePath == "" {
 		cachePath = filepath.Join(gopath, "pkg", "mod")
 	}
+	// 包版本路径
 	if path, err := ModuleVersion("github.com/biny-go/loong"); err == nil {
 		// $GOPATH/pkg/mod/github.com/biny-go/loong
 		return filepath.Join(cachePath, path)
 	}
-	// $GOPATH/src/github.com/biny-go/Loong
+	// 指定路径
+	// $GOPATH/src/github.com/biny-go/loong
 	return filepath.Join(gopath, "src", "github.com", "biny-go", "loong")
 }

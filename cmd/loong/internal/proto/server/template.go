@@ -3,12 +3,13 @@ package server
 import (
 	"bytes"
 	"html/template"
+	"strings"
 )
 
 //nolint:lll
-var serviceTemplate = `
+var controllerTemplate = `
 {{- /* delete empty line */ -}}
-package service
+package Controller
 
 import (
 	{{- if .UseContext }}
@@ -22,25 +23,30 @@ import (
 	{{- if .GoogleEmpty }}
 	"google.golang.org/protobuf/types/known/emptypb"
 	{{- end }}
+
+	common "github.com/biny-go/loong/proto/common"
+	svc "{{ getFirstPart .Package }}/service"
 )
 
-type {{ .Service }}Service struct {
+type {{ .Service }}Controller struct {
 	pb.Unimplemented{{ .Service }}Server
+	s svc.{{ .Service }}Service
+
 }
 
-func New{{ .Service }}Service() *{{ .Service }}Service {
-	return &{{ .Service }}Service{}
+func New{{ .Service }}Controller() *{{ .Service }}Controller {
+	return &{{ .Service }}Controller{}
 }
 
 {{- $s1 := "google.protobuf.Empty" }}
 {{ range .Methods }}
 {{- if eq .Type 1 }}
-func (s *{{ .Service }}Service) {{ .Name }}(ctx context.Context, req {{ if eq .Request $s1 }}*emptypb.Empty{{ else }}*pb.{{ .Request }}{{ end }}) ({{ if eq .Reply $s1 }}*emptypb.Empty{{ else }}*pb.{{ .Reply }}{{ end }}, error) {
-	return {{ if eq .Reply $s1 }}&emptypb.Empty{}{{ else }}&pb.{{ .Reply }}{}{{ end }}, nil
+func (s *{{ .Service }}Controller) {{ .Name }}(ctx context.Context, req {{ if eq .Request $s1 }}*emptypb.Empty{{ else if hasPrefix .Request "common." }}*{{ .Request }}{{ else }}*pb.{{ .Request }}{{ end }}) ({{ if eq .Reply $s1 }}*emptypb.Empty{{ else if hasPrefix .Reply "common." }}*{{ .Reply }}{{ else }}*pb.{{ .Reply }}{{ end }}, error) {
+	return {{ if eq .Reply $s1 }}&emptypb.Empty{}{{ else if hasPrefix .Reply "common." }}&{{ .Reply }}{}{{ else }}&pb.{{ .Reply }}{}{{ end }}, nil
 }
 
 {{- else if eq .Type 2 }}
-func (s *{{ .Service }}Service) {{ .Name }}(conn pb.{{ .Service }}_{{ .Name }}Server) error {
+func (s *{{ .Service }}Controller) {{ .Name }}(conn pb.{{ .Service }}_{{ .Name }}Server) error {
 	for {
 		req, err := conn.Recv()
 		if err == io.EOF {
@@ -50,7 +56,7 @@ func (s *{{ .Service }}Service) {{ .Name }}(conn pb.{{ .Service }}_{{ .Name }}Se
 			return err
 		}
 		
-		err = conn.Send(&pb.{{ .Reply }}{})
+		err = conn.Send({{ if hasPrefix .Reply "common." }}&{{ .Reply }}{}{{ else }}&pb.{{ .Reply }}{}{{ end }})
 		if err != nil {
 			return err
 		}
@@ -58,11 +64,11 @@ func (s *{{ .Service }}Service) {{ .Name }}(conn pb.{{ .Service }}_{{ .Name }}Se
 }
 
 {{- else if eq .Type 3 }}
-func (s *{{ .Service }}Service) {{ .Name }}(conn pb.{{ .Service }}_{{ .Name }}Server) error {
+func (s *{{ .Service }}Controller) {{ .Name }}(conn pb.{{ .Service }}_{{ .Name }}Server) error {
 	for {
 		req, err := conn.Recv()
 		if err == io.EOF {
-			return conn.SendAndClose(&pb.{{ .Reply }}{})
+			return conn.SendAndClose({{ if hasPrefix .Reply "common." }}&{{ .Reply }}{}{{ else }}&pb.{{ .Reply }}{}{{ end }})
 		}
 		if err != nil {
 			return err
@@ -71,10 +77,10 @@ func (s *{{ .Service }}Service) {{ .Name }}(conn pb.{{ .Service }}_{{ .Name }}Se
 }
 
 {{- else if eq .Type 4 }}
-func (s *{{ .Service }}Service) {{ .Name }}(req {{ if eq .Request $s1 }}*emptypb.Empty
+func (s *{{ .Service }}Controller) {{ .Name }}(req {{ if eq .Request $s1 }}*emptypb.Empty {{ else if hasPrefix .Request "common." }}*{{ .Request }}
 {{ else }}*pb.{{ .Request }}{{ end }}, conn pb.{{ .Service }}_{{ .Name }}Server) error {
 	for {
-		err := conn.Send(&pb.{{ .Reply }}{})
+		err := conn.Send({{ if hasPrefix .Reply "common." }}&{{ .Reply }}{}{{ else }}&pb.{{ .Reply }}{}{{ end }})
 		if err != nil {
 			return err
 		}
@@ -118,6 +124,19 @@ type Method struct {
 
 func (s *Service) execute() ([]byte, error) {
 	const empty = "google.protobuf.Empty"
+	// 新增模板函数
+	funcMap := template.FuncMap{
+		"hasPrefix": func(s, prefix string) bool {
+			return strings.HasPrefix(s, prefix)
+		},
+		"getFirstPart": func(str string) string {
+			parts := strings.SplitN(str, "/", 2)
+			if len(parts) > 0 {
+				return parts[0]
+			}
+			return ""
+		},
+	}
 	buf := new(bytes.Buffer)
 	for _, method := range s.Methods {
 		if (method.Type == unaryType && (method.Request == empty || method.Reply == empty)) ||
@@ -131,7 +150,7 @@ func (s *Service) execute() ([]byte, error) {
 			s.UseContext = true
 		}
 	}
-	tmpl, err := template.New("service").Parse(serviceTemplate)
+	tmpl, err := template.New("service").Funcs(funcMap).Parse(controllerTemplate)
 	if err != nil {
 		return nil, err
 	}

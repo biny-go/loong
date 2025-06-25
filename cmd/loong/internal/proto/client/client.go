@@ -90,16 +90,16 @@ func generate(proto string, args []string) error {
 	}
 	inputExt := []string{
 		"--proto_path=" + base.LoongMod(),
-		"--proto_path=" + filepath.Join(base.LoongMod(), "proto"),
-		"--proto_path=" + filepath.Join(base.LoongMod(), "proto", "common"),
 		"--proto_path=" + filepath.Join(base.LoongMod(), "third_party"),
+		"--proto_path=" + filepath.Join("..", "loong"),
+		"--proto_path=" + filepath.Join("..", "loong", "third_party"),
 		"--go_out=paths=source_relative:.",
 		"--go-grpc_out=paths=source_relative:.",
 		"--go-http_out=paths=source_relative:.",
 		"--go-errors_out=paths=source_relative:.",
 		"--openapi_out=paths=source_relative:.",
 	}
-	fmt.Println(inputExt)
+	// fmt.Println(inputExt)
 	input = append(input, inputExt...)
 	protoBytes, err := os.ReadFile(proto)
 	if err == nil && len(protoBytes) > 0 {
@@ -113,7 +113,7 @@ func generate(proto string, args []string) error {
 			input = append(input, a)
 		}
 	}
-	fmt.Println(input)
+	// fmt.Println(input)
 	fd := exec.Command("protoc", input...)
 	fd.Stdout = os.Stdout
 	fd.Stderr = os.Stderr

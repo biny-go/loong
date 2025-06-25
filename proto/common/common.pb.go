@@ -7,13 +7,12 @@
 package common
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -92,6 +91,75 @@ func (x *BaseResult) GetData() *anypb.Any {
 	return nil
 }
 
+// 数组型的应答
+type BaseResultArray struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Error         string                 `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+	ErrCode       string                 `protobuf:"bytes,3,opt,name=errCode,proto3" json:"errCode,omitempty"`
+	Data          []*anypb.Any           `protobuf:"bytes,4,rep,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BaseResultArray) Reset() {
+	*x = BaseResultArray{}
+	mi := &file_proto_common_common_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BaseResultArray) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BaseResultArray) ProtoMessage() {}
+
+func (x *BaseResultArray) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_common_common_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BaseResultArray.ProtoReflect.Descriptor instead.
+func (*BaseResultArray) Descriptor() ([]byte, []int) {
+	return file_proto_common_common_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *BaseResultArray) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *BaseResultArray) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
+
+func (x *BaseResultArray) GetErrCode() string {
+	if x != nil {
+		return x.ErrCode
+	}
+	return ""
+}
+
+func (x *BaseResultArray) GetData() []*anypb.Any {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 type Status struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
@@ -104,7 +172,7 @@ type Status struct {
 
 func (x *Status) Reset() {
 	*x = Status{}
-	mi := &file_proto_common_common_proto_msgTypes[1]
+	mi := &file_proto_common_common_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -116,7 +184,7 @@ func (x *Status) String() string {
 func (*Status) ProtoMessage() {}
 
 func (x *Status) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_common_proto_msgTypes[1]
+	mi := &file_proto_common_common_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -129,7 +197,7 @@ func (x *Status) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Status.ProtoReflect.Descriptor instead.
 func (*Status) Descriptor() ([]byte, []int) {
-	return file_proto_common_common_proto_rawDescGZIP(), []int{1}
+	return file_proto_common_common_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Status) GetCode() int32 {
@@ -170,7 +238,12 @@ const file_proto_common_common_proto_rawDesc = "" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x14\n" +
 	"\x05error\x18\x02 \x01(\tR\x05error\x12\x18\n" +
 	"\aerrCode\x18\x03 \x01(\tR\aerrCode\x12(\n" +
-	"\x04data\x18\x04 \x01(\v2\x14.google.protobuf.AnyR\x04data\"\xc5\x01\n" +
+	"\x04data\x18\x04 \x01(\v2\x14.google.protobuf.AnyR\x04data\"\x85\x01\n" +
+	"\x0fBaseResultArray\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x14\n" +
+	"\x05error\x18\x02 \x01(\tR\x05error\x12\x18\n" +
+	"\aerrCode\x18\x03 \x01(\tR\aerrCode\x12(\n" +
+	"\x04data\x18\x04 \x03(\v2\x14.google.protobuf.AnyR\x04data\"\xc5\x01\n" +
 	"\x06Status\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x16\n" +
 	"\x06reason\x18\x02 \x01(\tR\x06reason\x12\x18\n" +
@@ -178,8 +251,8 @@ const file_proto_common_common_proto_rawDesc = "" +
 	"\bmetadata\x18\x04 \x03(\v2\x1c.common.Status.MetadataEntryR\bmetadata\x1a;\n" +
 	"\rMetadataEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01BW\n" +
-	"\x17com.github.loong.commonP\x01Z,github.com/biny-go/loong/proto/common;common\xa2\x02\vloongCommonb\x06proto3"
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01BP\n" +
+	"\x10com.loong.commonP\x01Z,github.com/biny-go/loong/proto/common;common\xa2\x02\vloongCommonb\x06proto3"
 
 var (
 	file_proto_common_common_proto_rawDescOnce sync.Once
@@ -193,21 +266,23 @@ func file_proto_common_common_proto_rawDescGZIP() []byte {
 	return file_proto_common_common_proto_rawDescData
 }
 
-var file_proto_common_common_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_proto_common_common_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_proto_common_common_proto_goTypes = []any{
-	(*BaseResult)(nil), // 0: common.BaseResult
-	(*Status)(nil),     // 1: common.Status
-	nil,                // 2: common.Status.MetadataEntry
-	(*anypb.Any)(nil),  // 3: google.protobuf.Any
+	(*BaseResult)(nil),      // 0: common.BaseResult
+	(*BaseResultArray)(nil), // 1: common.BaseResultArray
+	(*Status)(nil),          // 2: common.Status
+	nil,                     // 3: common.Status.MetadataEntry
+	(*anypb.Any)(nil),       // 4: google.protobuf.Any
 }
 var file_proto_common_common_proto_depIdxs = []int32{
-	3, // 0: common.BaseResult.data:type_name -> google.protobuf.Any
-	2, // 1: common.Status.metadata:type_name -> common.Status.MetadataEntry
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	4, // 0: common.BaseResult.data:type_name -> google.protobuf.Any
+	4, // 1: common.BaseResultArray.data:type_name -> google.protobuf.Any
+	3, // 2: common.Status.metadata:type_name -> common.Status.MetadataEntry
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_proto_common_common_proto_init() }
@@ -221,7 +296,7 @@ func file_proto_common_common_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_common_common_proto_rawDesc), len(file_proto_common_common_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

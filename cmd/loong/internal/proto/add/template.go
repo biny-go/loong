@@ -16,9 +16,10 @@ option java_multiple_files = true;
 option java_package = "{{.JavaPackage}}";
 
 import "google/api/annotations.proto";
+import "proto/common/common.proto"; // --proto_path=loong路径/proto/common/common.proto  proto文件包名+结构体：common.BaseResult
 
 service {{.Service}} {
-	rpc Save{{.Service}} (Save{{.Service}}Request) returns (Save{{.Service}}Reply) {
+	rpc Save{{.Service}} (Save{{.Service}}Request) returns (common.BaseResult) {
 		option (google.api.http) = {
 			post: "/{{.ServicePath}}"
 			body: "*"

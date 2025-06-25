@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package common;
+package common; //proto 包名
 
-// 格式说明:  "生成代码的Go导入路径;生成的Go包名"
+// 格式说明:  "生成代码的Go导入路径;生成的Go包名(注意和package包名区分)" github.com/biny-go/loong/proto/common
 option go_package = "github.com/biny-go/loong/proto/common;common";
 option java_multiple_files = true;
-option java_package = "com.github.loong.common";
+option java_package = "com.loong.common";
 option objc_class_prefix = "loongCommon";
 
 import "google/protobuf/any.proto";
@@ -16,6 +16,14 @@ message BaseResult {
 	string error = 2;
 	string errCode = 3;
 	google.protobuf.Any data = 4;
+}
+
+// 数组型的应答
+message BaseResultArray {
+	bool success = 1;
+	string error = 2;
+	string errCode = 3;
+	repeated google.protobuf.Any data = 4;
 }
 
 message Status {
